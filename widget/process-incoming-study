@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#
+# hook script for incoming studies
+# uses DCMTK tools to determine study parameters
+#
+# this script makes the most sense when called by storescp upon end-of-study
+#
+
+# make sure the DICOM directory is specified
+if [ -z $1 ]
+then
+	echo "usage: $0 directory"
+	exit 1
+fi
+
+echo "$0 called with $1"

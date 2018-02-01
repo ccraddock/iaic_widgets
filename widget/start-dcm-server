@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# storescp     This shell script takes care of starting storescp
+
+#
+# Init
+#
+widget_dir=/widget
+log_dir=/widget_logs
+dicomdir=/usr/bin
+dicomuser=`whoami`
+prog=storescp
+storescp=${dicomdir}/${prog}
+
+logfile=/${log_dir}/${prog}.log
+pidfile=/${log_dir}/${prog}.pid
+
+aet=DIAIC
+ext=".dcm"
+dicomport=5104
+script=${widget_dir}/process-incoming-study
+prefix=sorted
+timeoutsec=2
+
+[ -x ${storescp} ] || exit 1
+
+export DCMDICTPATH='/usr/share/dcmtk/dicom.dic'
+
+# Start storescp.
+date > ${logfile}
+echo ${storescp} >> ${logfile}
+echo --output-directory ${dicomdir} >> ${logfile}
+echo --aetitle ${aet} >> ${logfile}
+echo --filename-extension ${ext} >> ${logfile}
+echo --eostudy-timeout ${timeoutsec} >> ${logfile}
+echo --sort-conc-studies ${prefix} >> ${logfile}
+#echo "--exec-on-eostudy \"sudo -u ${dicomuser} ${script} #p\"" >> ${logfile}
+echo "--exec-on-eostudy \"${script} #p\"" >> ${logfile}
+echo ${dicomport} >> ${logfile}
+echo >> ${logfile}
+
+${storescp} \
+    --output-directory ${dicomdir} \
+    --aetitle ${aet} \
+    --filename-extension ${ext} \
+    --eostudy-timeout ${timeoutsec} \
+    --sort-conc-studies ${prefix} \
+    --exec-on-eostudy "${script} #p" \
+    ${dicomport} \
+    >> ${logfile} 2>&1 
+
+echo $! > ${pidfile}
+exit 0
