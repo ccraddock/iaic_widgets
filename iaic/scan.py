@@ -1,0 +1,142 @@
+import numpy as np
+import pydicom as dicom
+import os
+import datetime
+import matplotlib.pyplot as plt
+import glob
+from collections import defaultdict
+import pathlib
+import time
+
+
+def mask(image):
+  pixels = image.pixel_array
+  
+  rows = pixels.shape[0]
+  cols = pixels.shape[1]
+  masked = np.zeros((rows, cols))
+  mean = np.mean(pixels)
+  for i in range((rows)):
+    for j in range((cols)):
+      if (not(mean * 1.2 >= pixels[i][j] >= mean * .6)):
+        image.pixel_array[i][j]=0
+  
+  image.PixelData=image.pixel_array.tostring()
+ 
+  
+  return image
+
+
+# store dictionary of images into new folder
+def store(imagedict):
+  pathlib.Path("../Dell/maskedimages").mkdir(exist_ok=True)
+  
+  for key in imagedict:
+    imagelist = imagedict[key]
+    pathlib.Path("../Dell/maskedimages/" + key).mkdir(exist_ok=True)
+    for i in range(len(imagelist)):
+      image = dicom.dcmread(imagelist[i])
+      masked=mask(image)
+      masked.save_as("../Dell/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
+
+
+# scan and save according to patient name (returns dictionary of lists)
+def scanPatientName():
+  images = []
+  images = glob.glob("**/*.dcm", recursive=True)
+  
+  print("scanning function, patient name")
+  print()
+  
+  patient = defaultdict(list)
+  
+  for i in range(len(images)):
+    read = dicom.read_file(images[i])
+    if (str(read.PatientName) in patient):
+      patient[str(read.PatientName)].append(images[i])
+    else:
+      newlist = []
+      newlist.append(images[i])
+      patient[str(read.PatientName)] = newlist
+  return patient
+
+
+# scan and save according to series description (returns dictionary of lists)
+def scanSeriesDescription():
+  print("scanning function, series description")
+  images = []
+  images = glob.glob("**/*.dcm", recursive=True)
+  sequencename = defaultdict(list)
+  
+  for i in range(len(images)):
+    read = dicom.read_file(images[i])
+    if (str(read.SeriesDescription) in sequencename):
+      sequencename[str(read.SeriesDescription)].append(images[i])
+    else:
+      newlist = []
+      newlist.append(images[i])
+      sequencename[str(read.SeriesDescription)] = newlist
+  # store(sequencename)
+  
+  return sequencename
+
+
+def main():
+  startTime = time.time()
+  
+  print("scanning function")
+  print()
+  # for i in range(len(images)):
+  #   print(images[i])
+  
+  # scan and save according to patient name
+  
+  # patient=defaultdict(list)
+  
+  # for i in range(len(images)):
+  # 	read=dicom.read_file(images[i])
+  # 	if (str(read.PatientName) in patient):
+  # 		patient[str(read.PatientName)].append(images[i])
+  # 	else:
+  # 		newlist=[]
+  
+  # 		newlist.append(images[i])
+  # 		patient[str(read.PatientName)]=newlist
+  
+  # 	read=[]
+  
+  # for key in patient:
+  # 	print(key, len(patient[key]))
+  # 	print()
+  
+  # #scan and store according to series description
+  # sequencename = defaultdict(list)
+  #
+  # for i in range(len(images)):
+  #   read = dicom.read_file(images[i])
+  #   if (str(read.SeriesDescription) in sequencename):
+  #     sequencename[str(read.SeriesDescription)].append(images[i])
+  #   else:
+  #     newlist = []
+  #     newlist.append(images[i])
+  #     sequencename[str(read.SeriesDescription)] = newlist
+  #
+  #   read = []
+  # for key in sequencename:
+  #   print(key, len(sequencename[key]))
+  #   print()
+  seq = scanSeriesDescription()
+  # store(seq["Resolution Insert"], "copiedimages")
+  # print(len(seq))
+  # for keys in seq:
+  #   print (keys)
+  
+  store(seq)
+  # pat=scanPatientName()
+  # print(len(pat))
+  # print(pat.keys())
+  
+  print('The script took {0} second !'.format(time.time() - startTime))
+
+
+main()
