@@ -29,15 +29,15 @@ def mask(image):
 
 # store dictionary of images into new folder
 def store(imagedict):
-  pathlib.Path("../Dell/maskedimages").mkdir(exist_ok=True)
+  pathlib.Path("../Desktop/maskedimages").mkdir(exist_ok=True)
   
   for key in imagedict:
     imagelist = imagedict[key]
-    pathlib.Path("../Dell/maskedimages/" + key).mkdir(exist_ok=True)
+    pathlib.Path("../Desktop/maskedimages/" + key).mkdir(exist_ok=True)
     for i in range(len(imagelist)):
       image = dicom.dcmread(imagelist[i])
       masked=mask(image)
-      masked.save_as("../Dell/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
+      masked.save_as("../Desktop/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
 
 
 # scan and save according to patient name (returns dictionary of lists)
