@@ -29,15 +29,15 @@ def mask(image):
 
 # store dictionary of images into new folder
 def store(imagedict):
-  pathlib.Path("../Desktop/maskedimages").mkdir(exist_ok=True)
+  pathlib.Path("../Dell/maskedimages").mkdir(exist_ok=True)
   
   for key in imagedict:
     imagelist = imagedict[key]
-    pathlib.Path("../Desktop/maskedimages/" + key).mkdir(exist_ok=True)
+    pathlib.Path("../Dell/maskedimages/" + key).mkdir(exist_ok=True)
     for i in range(len(imagelist)):
       image = dicom.dcmread(imagelist[i])
       masked=mask(image)
-      masked.save_as("../Desktop/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
+      masked.save_as("../Dell/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
 
 
 # scan and save according to patient name (returns dictionary of lists)
@@ -70,12 +70,20 @@ def scanSeriesDescription():
   
   for i in range(len(images)):
     read = dicom.read_file(images[i])
-    if (str(read.SeriesDescription) in sequencename):
-      sequencename[str(read.SeriesDescription)].append(images[i])
-    else:
-      newlist = []
-      newlist.append(images[i])
-      sequencename[str(read.SeriesDescription)] = newlist
+    try:
+	    if (str(read.SeriesDescription) in sequencename):
+	      sequencename[str(read.SeriesDescription)].append(images[i])
+	    else:
+	      newlist = []
+	      newlist.append(images[i])
+	      sequencename[str(read.SeriesDescription)] = newlist
+	  except:
+	  	if ("misc" in sequencename):
+	  		sequencename["misc"].append(images[i])
+	  	else:
+	  		newl=[]
+	  		newl.append(images[i])
+	  		sequencename["misc"]=newl
   # store(sequencename)
   
   return sequencename
