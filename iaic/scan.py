@@ -86,55 +86,11 @@ def main():
   
   print("scanning function")
   print()
-  # for i in range(len(images)):
-  #   print(images[i])
-  
-  # scan and save according to patient name
-  
-  # patient=defaultdict(list)
-  
-  # for i in range(len(images)):
-  # 	read=dicom.read_file(images[i])
-  # 	if (str(read.PatientName) in patient):
-  # 		patient[str(read.PatientName)].append(images[i])
-  # 	else:
-  # 		newlist=[]
-  
-  # 		newlist.append(images[i])
-  # 		patient[str(read.PatientName)]=newlist
-  
-  # 	read=[]
-  
-  # for key in patient:
-  # 	print(key, len(patient[key]))
-  # 	print()
-  
-  # #scan and store according to series description
-  # sequencename = defaultdict(list)
-  #
-  # for i in range(len(images)):
-  #   read = dicom.read_file(images[i])
-  #   if (str(read.SeriesDescription) in sequencename):
-  #     sequencename[str(read.SeriesDescription)].append(images[i])
-  #   else:
-  #     newlist = []
-  #     newlist.append(images[i])
-  #     sequencename[str(read.SeriesDescription)] = newlist
-  #
-  #   read = []
-  # for key in sequencename:
-  #   print(key, len(sequencename[key]))
-  #   print()
+ 
   seq = scanSeriesDescription()
-  # store(seq["Resolution Insert"], "copiedimages")
-  # print(len(seq))
-  # for keys in seq:
-  #   print (keys)
   
   store(seq)
-  # pat=scanPatientName()
-  # print(len(pat))
-  # print(pat.keys())
+  
   
   print('The script took {0} second !'.format(time.time() - startTime))
 
