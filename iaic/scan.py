@@ -2,7 +2,7 @@ import numpy as np
 import pydicom as dicom
 import os
 import datetime
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import glob
 from collections import defaultdict
 import pathlib
