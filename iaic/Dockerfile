@@ -1,13 +1,19 @@
-FROM ubuntu:16.04
+FROM ubuntu:17.10
 MAINTAINER sr
 
 ADD . /
-RUN apt-get update && \
-    apt-get install -y dcmtk
-RUN apt-get install -y python3
-EXPOSE 80
-EXPOSE 4444
-RUN storescp -v -xcr "python3 /hello.py" 4444
 
+RUN apt-get update
+RUN apt-get install -y python3-pip   
+RUN apt-get install -y dcmtk && \
+    pip3 install pydicom && \
+    pip3 install numpy && \
+    pip3 install glob3 && \
+    apt-get install -y python3-tk
+    
+
+
+EXPOSE 4444
+ENTRYPOINT storescp -v -xcr "python3 ./scan.py" 4444
 
 
