@@ -14,6 +14,10 @@ RUN apt-get install -y dcmtk && \
 
 
 EXPOSE 4444
-ENTRYPOINT storescp -v -xcs "python3 ./scan.py" 4444
+
+ENTRYPOINT storescp -v -xcs "echo #r> ./ip.txt && python3 ./scan.py" 4444
+
+
+
 
 
