@@ -70,23 +70,45 @@ def scanSeriesDescription():
   
   for i in range(len(images)):
     read = dicom.read_file(images[i])
-    try:
-	    if (str(read.SeriesDescription) in sequencename):
-	      sequencename[str(read.SeriesDescription)].append(images[i])
-	    else:
-	      newlist = []
-	      newlist.append(images[i])
-	      sequencename[str(read.SeriesDescription)] = newlist
-	  except:
-	  	if ("misc" in sequencename):
-	  		sequencename["misc"].append(images[i])
-	  	else:
-	  		newl=[]
-	  		newl.append(images[i])
-	  		sequencename["misc"]=newl
+    
+    if (str(read.SeriesDescription) in sequencename):
+      sequencename[str(read.SeriesDescription)].append(images[i])
+    else:
+      newlist = []
+      newlist.append(images[i])
+      sequencename[str(read.SeriesDescription)] = newlist    
+    
+    # if ("misc" in sequencename):
+    #   sequencename["misc"].append(images[i])
+    # else:
+    #   newl=[]
+    #   newl.append(images[i])
+    #   sequencename["misc"]=newl
   # store(sequencename)
   
   return sequencename
+
+def sendback():
+  images=[]
+  images = glob.glob("./maskedimages/**/*.dcm", recursive=True)
+  print (len(images))
+  infile= open("ip.txt", "r")
+  ip= infile.readline().strip()
+  
+  for i in range (len(images)):
+  
+    command="storescu "+ip+" 4443 "+"'"+images[i]+"'"
+    print (command)
+    #os.system(command)
+
+
+def rem():
+
+  images=[]
+  images=glob.glob("**/*.dcm", recursive=True)
+  for image in images:
+    print (image)
+    os.remove(image)
 
 
 def main():
@@ -98,6 +120,10 @@ def main():
   seq = scanSeriesDescription()
   
   store(seq)
+
+  sendback()
+
+  rem()
   
   
   print('The script took {0} second !'.format(time.time() - startTime))
