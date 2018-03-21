@@ -29,15 +29,15 @@ def mask(image):
 
 # store dictionary of images into new folder
 def store(imagedict):
-  pathlib.Path("../Dell/maskedimages").mkdir(exist_ok=True)
+  pathlib.Path("./maskedimages").mkdir(exist_ok=True)
   
   for key in imagedict:
     imagelist = imagedict[key]
-    pathlib.Path("../Dell/maskedimages/" + key).mkdir(exist_ok=True)
+    pathlib.Path("./maskedimages/" + key).mkdir(exist_ok=True)
     for i in range(len(imagelist)):
       image = dicom.dcmread(imagelist[i])
       masked=mask(image)
-      masked.save_as("../Dell/maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
+      masked.save_as("./maskedimages/" + key + "/" + str(i) + "masked.dcm", write_like_original=True)
 
 
 # scan and save according to patient name (returns dictionary of lists)
@@ -98,8 +98,8 @@ def sendback():
   for i in range (len(images)):
   
     command="storescu "+ip+" 4443 "+"'"+images[i]+"'"
-    print (command)
-    #os.system(command)
+    #print (command)
+    os.system(command)
 
 
 def rem():
