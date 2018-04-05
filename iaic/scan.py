@@ -65,7 +65,7 @@ def scanPatientName():
 def scanSeriesDescription():
   print("scanning function, series description")
   images = []
-  images = glob.glob("**/*.dcm", recursive=True)
+  images = glob.glob("*.dcm", recursive=False)
   sequencename = defaultdict(list)
   
   for i in range(len(images)):
@@ -98,16 +98,25 @@ def sendback():
   for i in range (len(images)):
   
     command="storescu "+ip+" 4443 "+"'"+images[i]+"'"
-    #print (command)
+    print (command)
     os.system(command)
 
 
 def rem():
 
+ 
   images=[]
-  images=glob.glob("**/*.dcm", recursive=True)
+  images=glob.glob("*/*.dcm", recursive=False)
   for image in images:
     print (image)
+    os.remove(image)
+  images =glob.glob("*/*/*.dcm")
+  for image in images:
+    print(image)
+    os.remove(image)
+  images =glob.glob("*.dcm")
+  for image in images:
+    print(image)
     os.remove(image)
 
 
