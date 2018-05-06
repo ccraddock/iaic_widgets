@@ -12,7 +12,8 @@ RUN apt-get install -y dcmtk && \
     apt-get install -y python3-tk && \
     pip3 install dash && \
     pip3 install dash-table-experiments && \
-    pip3 install dash_renderer
+    pip3 install dash_renderer && \
+    pip3 install dash_core_components 
     
     
 
