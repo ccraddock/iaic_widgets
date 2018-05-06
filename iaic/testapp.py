@@ -17,11 +17,21 @@ import plotly.graph_objs as go
 
 from plotly.tools import FigureFactory as ff
 import plotly.figure_factory
+import pydicom
 
 
+studyID=""
 def createLog():
+  
   images = []
   images = glob.glob("./maskedimages/**/*.dcm", recursive=True)
+  # studynamefile=open("studyname.txt", "w")
+  
+  studyimage=images[0]
+  siread=pydicom.dcmread(studyimage)
+  global studyID
+  studyID=siread.StudyID
+  
   ipfile = open("ip.txt", 'r')
   ip = ipfile.readline().strip()
   
@@ -69,12 +79,14 @@ def makecsv():
   ips = []
   dates = []
   imagelists = []
+  studyNames=[]
   for i in range(len(arrdata)):
     ips.append(arrdata[i][0])
     dates.append(arrdata[i][1])
     imagelists.append(len(arrdata[i][2]))
-  
-  myitems = [("IP", ips), ("Dates", dates), ("Images", imagelists)]
+    studyNames.append(studyID)
+  # print(studyNames)
+  myitems = [("IP", ips), ("Dates", dates), ("Images", imagelists), ("Study ID", studyNames)]
   
   df = pd.DataFrame.from_items(myitems)
   df.to_csv("logs.csv", index=False)
@@ -92,6 +104,7 @@ def transform():
       arrdata.append(arr)
   
   return arrdata
+
 
 app = dash.Dash()
 
@@ -111,14 +124,15 @@ def get_data_object(user_selection):
   
   return dataframes[user_selection]
 
-status=open("status.txt", "r").readline()
+
+status = open("status.txt", "r").readline()
 
 app.layout = html.Div([
   
   html.H4('Image Analysis Logs'),
   html.Div(children='''
             check status of app
-        '''+status),
+        ''' + status),
   
   html.Label('Report type:', style={'font-weight': 'bold'}),
   
@@ -145,8 +159,6 @@ app.layout = html.Div([
     filterable=True,
     
     sortable=True,
-    
-    
     
     id='table'
   
