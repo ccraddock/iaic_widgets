@@ -7,6 +7,7 @@ import glob
 from collections import defaultdict
 import pathlib
 import time
+import testapp
 
 
 def mask(image):
@@ -131,7 +132,9 @@ def main():
   store(seq)
 
   sendback()
-
+  
+  testapp.main()
+  
   rem()
   
   
