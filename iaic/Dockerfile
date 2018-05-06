@@ -9,13 +9,17 @@ RUN apt-get install -y dcmtk && \
     pip3 install pydicom && \
     pip3 install numpy && \
     pip3 install glob3 && \
-    apt-get install -y python3-tk
+    apt-get install -y python3-tk && \
+    pip3 install dash && \
+    pip3 install dash-table-experiments
+    
     
 
 
 EXPOSE 4444
+EXPOSE 8050
 
-ENTRYPOINT storescp -v -fe ".dcm" -xcr "echo #r> ./ip.txt && python3 ./scan.py" 4444
+ENTRYPOINT storescp -v -fe ".dcm" -xcr "echo #r> ./ip.txt && python3 ./scan.py" 4444 && python3 testapp.py
 
 
 
