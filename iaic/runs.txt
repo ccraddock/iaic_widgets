@@ -5,3 +5,8 @@ docker run -p 4444:4444 -p 8050:8050 -p 4443:4443 --net=host swanandrakhade/dell
 or 
 
 docker run -p 4444:4444 -p 8050:8050 -p 4443:4443 --net=host swanandrakhade/dell:scan1
+
+
+command to send to orthanc 
+
+storescu -aec ORTHANC localhost 4242 *.dcm
